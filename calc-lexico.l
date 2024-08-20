@@ -16,6 +16,20 @@ digito [0-9]
 
 
 %%
+"TRUE"	                  {	printf("TRUE");
+							return 1;
+											}
+
+"FALSE"                   { printf("FALSE");
+							return 0;
+											}
+
+"and"                      { return AND; }
+
+"or"                       { return OR; }
+
+"then"                     { return THEN; }
+
 
 {digito}+                     { 
                                 printf("INT : %d\n",atoi(yytext)); 

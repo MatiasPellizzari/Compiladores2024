@@ -6,16 +6,18 @@
 %}
  
 %token INT
-%token BOOL
+%token TRUE FALSE
+%token AND OR THEN
 %token ID
 %token TMENOS
 
 %type expr
 %type VALOR
-    
+
 %left '+' '-'
 %left '*'
- 
+%left AND OR 
+%left THEN
 %%
  
 prog: expr ';'  { printf("No hay errores \n"); } 
@@ -30,9 +32,17 @@ expr: VALOR
     | expr '-' expr  
 
     | '(' expr ')'      
+
+    | TRUE   {$$ = 1}
+    
+    | FALSE {$$ = 0}
+
+    | expr AND expr {$$=1 && $3}
+    
+    | expr OR expr {$$=1 || $3}
+
+    | expr THEN expr {$$ = $1 ? $3 : 0;}
     ;
-
-
 VALOR : INT              
        ;
  
