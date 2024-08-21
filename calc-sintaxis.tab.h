@@ -57,11 +57,12 @@ extern int yydebug;
     INT = 258,                     /* INT  */
     TRUE = 259,                    /* TRUE  */
     FALSE = 260,                   /* FALSE  */
-    AND = 261,                     /* AND  */
-    OR = 262,                      /* OR  */
-    THEN = 263,                    /* THEN  */
-    ID = 264,                      /* ID  */
-    TMENOS = 265                   /* TMENOS  */
+    ID = 261,                      /* ID  */
+    TMENOS = 262,                  /* TMENOS  */
+    BOOL = 263,                    /* BOOL  */
+    AND = 264,                     /* AND  */
+    OR = 265,                      /* OR  */
+    THEN = 266                     /* THEN  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif

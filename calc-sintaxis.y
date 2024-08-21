@@ -7,16 +7,17 @@
  
 %token INT
 %token TRUE FALSE
-%token AND OR THEN
 %token ID
 %token TMENOS
+%token BOOL
 
 %type expr
 %type VALOR
+%type boolean
 
 %left '+' '-'
 %left '*'
-%left AND OR 
+%left AND OR
 %left THEN
 %%
  
@@ -25,26 +26,30 @@ prog: expr ';'  { printf("No hay errores \n"); }
   
 expr: VALOR               
 
-    | expr '+' expr    
+    | expr '+' expr    { $$ = $1 + $3;}
     
-    | expr '*' expr
+    | expr '*' expr    { $$ = $1 * $3;}  
 
-    | expr '-' expr  
+    | expr '-' expr    { $$ = $1 - $3;} 
 
-    | '(' expr ')'      
+    | '(' expr ')'     { $$ = $2;} 
 
-    | TRUE   {$$ = 1}
-    
-    | FALSE {$$ = 0}
+    | expr AND expr    { $$ = $1 && $3; }
 
-    | expr AND expr {$$=1 && $3}
-    
-    | expr OR expr {$$=1 || $3}
+    | expr OR expr     { $$ = $1 || $3; }
 
-    | expr THEN expr {$$ = $1 ? $3 : 0;}
+    | boolean          { $$ = $1; }  
     ;
 VALOR : INT              
-       ;
+    ;
+
+boolean:
+    | TRUE    { $$ = 1;}
+      
+    | FALSE   { $$ = 2;}
+    ;
+boolean : BOOL
+    ;      
  
 %%
 

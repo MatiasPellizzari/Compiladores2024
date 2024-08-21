@@ -17,18 +17,18 @@ digito [0-9]
 
 %%
 "TRUE"	                  {	printf("TRUE");
-							return 1;
+							return TRUE;
 											}
 
 "FALSE"                   { printf("FALSE");
-							return 0;
+							return FALSE;
 											}
 
-"and"                      { return AND; }
+"AND"                      { return AND; }
 
-"or"                       { return OR; }
+"OR"                       { return OR; }
 
-"then"                     { return THEN; }
+"THEN"                     { return THEN; }
 
 
 {digito}+                     { 
