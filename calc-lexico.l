@@ -16,19 +16,22 @@ digito [0-9]
 
 
 %%
-"TRUE"	                  {	printf("TRUE");
+"RET"					 {
+							return RET;
+											}
+
+
+"TRUE"	                  {	//printf("TRUE");
 							return TRUE;
 											}
 
-"FALSE"                   { printf("FALSE");
+"FALSE"                   { //printf("FALSE");
 							return FALSE;
 											}
 
 "AND"                      { return AND; }
 
 "OR"                       { return OR; }
-
-"THEN"                     { return THEN; }
 
 
 {digito}+                     { 
