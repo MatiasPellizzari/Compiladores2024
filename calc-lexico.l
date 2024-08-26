@@ -16,6 +16,15 @@ digito [0-9]
 
 
 %%
+
+"int"           { return INT; }    // Define variables de tipo entero
+
+"bool"          { return BOOL; }   // Define variables de tipo booleano
+
+"void"          { return VOID; }   // Define funciones que no retornan valor
+
+"main"          { return MAIN; }   // Nombre de la función principal
+
 "RET"					 {
 							return RET;
 											}

@@ -1,4 +1,7 @@
-RET TRUE;
-RET FALSE;
-x= 4+3;
-RET 4;
+int main() {
+    int x;
+    bool flag;
+    x = 5;
+    flag = TRUE;
+    return x;
+}
