@@ -23,39 +23,27 @@
  
 prog: main_func; 
 
-main_func: type MAIN '(' ')' '{' decls sents ret_stmt '}' 
-         | VOID MAIN '(' ')' '{' decls sents ret_stmt '}'
+main_func: type MAIN '(' ')' '{' decls sents '}' 
+         | VOID MAIN '(' ')' '{' decls sents '}'
          ;
 
-decls: /* vacío */
-     | decl decls ;
-
-decl: type ID ';' { printf("Declaración de variable: %s\n", $2); }
+decl: type ID ';' { printf("Declaración de variable: %s\n", $2);}
     ;
 
-ret_stmt: RET expr ';' { printf("Return: %d\n", $2); }
-        | RET ';'     { printf("Return void\n"); }
-        ;
-
-sents: /* vacío */
-     | sent sents ;
+decls: decl
+     | decl decls ;
 
 sent: ID '=' expr ';'  { printf("Asignación: %s = %d\n", $1, $3); } 
     | RET expr ';'     { printf("Return: %d\n", $2); }
     ;
 
-main_func: type MAIN '(' ')' '{' decls sents ret_stmt '}' 
-         | VOID MAIN '(' ')' '{' decls sents ret_stmt '}'
-         ;
+sents: sent
+     | sent sents ;
+
 
 type: INT  { $$ = 1; }
     | BOOL { $$ = 0; }
     ;
-
-sent: ID '=' expr ';'  { printf("No hay errores \n"); } 
-    | RET expr ';'     { printf("return");}
-    ;
-
 
 expr: VALOR               
  
@@ -75,6 +63,7 @@ expr: VALOR
 
     | boolean          { $$ = $1; }  
     ;
+
 VALOR : INT              
     ;
 
@@ -82,8 +71,7 @@ boolean:
     | TRUE    { $$ = 1;}
       
     | FALSE   { $$ = 2;}
-    ;
-boolean : BOOL
+
     ;      
  
 %%

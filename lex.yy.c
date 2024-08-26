@@ -1,5 +1,5 @@
 
-#line 2 "lex.yy.c"
+#line 3 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -399,14 +399,14 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    1,    3,
         3,    3,    3,    1,    4,    1,    1,    5,    5,    5,
         5,    5,    5,    5,    5,    5,    5,    1,    3,    1,
-        1,    1,    1,    1,    6,    7,    7,    8,    9,   10,
+        3,    1,    1,    1,    6,    7,    7,    8,    9,   10,
         7,    7,    7,    7,    7,   11,    7,   12,   13,    7,
         7,   14,   15,   16,   17,    7,    7,    7,    7,    7,
         1,    1,    1,    1,    1,    1,   18,   19,    7,   20,
 
         7,    7,    7,    7,   21,    7,    7,   22,   23,   24,
        25,    7,    7,    7,    7,   26,    7,   27,    7,    7,
-        7,    7,    1,    1,    1,    1,    1,    1,    1,    1,
+        7,    7,    3,    1,    3,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -502,8 +502,8 @@ char *yytext;
 
 #include "calc-sintaxis.tab.h"
 
-#line 505 "lex.yy.c"
 #line 506 "lex.yy.c"
+#line 507 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -723,7 +723,7 @@ YY_DECL
 #line 18 "calc-lexico.l"
 
 
-#line 726 "lex.yy.c"
+#line 727 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -813,72 +813,70 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 #line 28 "calc-lexico.l"
-{
-							return RET;
-											}
+{return RET;}  // Retorno
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 33 "calc-lexico.l"
+#line 30 "calc-lexico.l"
 {	//printf("TRUE");
 							return TRUE;
 											}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 37 "calc-lexico.l"
+#line 34 "calc-lexico.l"
 { //printf("FALSE");
 							return FALSE;
 											}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 41 "calc-lexico.l"
+#line 38 "calc-lexico.l"
 { return AND; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 43 "calc-lexico.l"
+#line 40 "calc-lexico.l"
 { return OR; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 46 "calc-lexico.l"
+#line 43 "calc-lexico.l"
 { 
                                 printf("INT : %d\n",atoi(yytext)); 
                                 return INT;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 50 "calc-lexico.l"
+#line 47 "calc-lexico.l"
 { 
                                 printf("ID : %s\n",yytext);
                                 return ID;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 54 "calc-lexico.l"
+#line 51 "calc-lexico.l"
 {  printf("%s\n",yytext);
                                   return TMENOS;}    
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 57 "calc-lexico.l"
+#line 54 "calc-lexico.l"
 {  printf("%s\n",yytext);
                                   return *yytext;}
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 60 "calc-lexico.l"
+#line 57 "calc-lexico.l"
 ; /* ignore all the rest */
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 62 "calc-lexico.l"
+#line 59 "calc-lexico.l"
 ECHO;
 	YY_BREAK
-#line 881 "lex.yy.c"
+#line 880 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1895,7 +1893,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 62 "calc-lexico.l"
+#line 59 "calc-lexico.l"
 
 
 void yyerror(){

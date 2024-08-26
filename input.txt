@@ -1,7 +1,5 @@
-int main() {
-    int x;
-    bool flag;
-    x = 5;
-    flag = TRUE;
-    return x;
+void main(){
+int X;
+X= 1+2;
+RET X;
 }

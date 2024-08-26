@@ -25,10 +25,7 @@ digito [0-9]
 
 "main"          { return MAIN; }   // Nombre de la función principal
 
-"RET"					 {
-							return RET;
-											}
-
+"RET"			{return RET;}  // Retorno
 
 "TRUE"	                  {	//printf("TRUE");
 							return TRUE;
@@ -54,7 +51,7 @@ digito [0-9]
 "-"                       {  printf("%s\n",yytext);
                                   return TMENOS;}    
 
-[+*;()]                   {  printf("%s\n",yytext);
+[+*;(){}=]                   {  printf("%s\n",yytext);
                                   return *yytext;}
 
 .|\n                          ; /* ignore all the rest */
