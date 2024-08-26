@@ -48,7 +48,7 @@ type: INT  { $$ = 1; }
 expr: VALOR               
  
     | expr '+' expr    { $$ = $1 + $3;}
-    
+
     | expr '*' expr    { $$ = $1 * $3;}  
 
     | expr '-' expr    { $$ = $1 - $3;} 
