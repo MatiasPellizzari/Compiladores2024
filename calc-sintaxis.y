@@ -2,9 +2,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include tree_builder.c 
 
 %}
  
+%union {*astNode Node; *char name;} 
 %token INT
 %token TRUE FALSE
 %token ID
@@ -15,6 +18,7 @@
 %type expr
 %type VALOR
 %type boolean
+%type <Node> prog main_func decl decls sent sents type expr VALOR boolean
 
 %left '+' '-'
 %left '*'
