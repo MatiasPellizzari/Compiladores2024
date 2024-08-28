@@ -40,11 +40,11 @@ ASTNode* createNode( NodeType type){
             node->data.function.decls = NULL;
             node->data.function.sents = NULL;
             break;
-        case NODE_DECLARATION
+        case NODE_DECLARATION:
             node->data.declaration.identifier= NULL;
             node->data.declaration.value= NULL;
             break;
-        case NODE_BINARY_OPERATION
+        case NODE_BINARY_OPERATION:
             node->data.binaryOperation.left= NULL;
             node->data.binaryOperation.right=NULL;
             break;    
@@ -92,4 +92,9 @@ void printAST(ASTNode* node, int indent) {
             break;
     }
     printAST(node->next, indent);
+}
+
+void buildTree(ASTNode father,ASTNode childr,ASTNode childl){
+
+
 }
