@@ -11,6 +11,11 @@ typedef enum {
     NODE_IDENTIFIER
 } NodeType;
 
+typedef enum{
+    INT,
+    BOOL
+}   ValueType;
+
 typedef struct ASTNode {
     NodeType type;
     union {
@@ -26,6 +31,7 @@ typedef struct ASTNode {
         struct{
             char* identifier; 
             int value;
+            ValueType valuetype;
         } declaration;
     } data;
     struct ASTNode* next;
@@ -52,6 +58,39 @@ ASTNode* createNode( NodeType type){
 }
 
 
+void buildTree(ASTNode father,ASTNODE addition){
+    if(father.type == NODE_FUNCTION){
+        if(addition.type == NODE_DECLARATION){
+            buildTree(father.decls,addition);
+        }else{
+            buildTree(father.sents,addition);
+        }
+    }
+    switch(addition.type){
+        case NODE_DECLARATION:
+           if(father.next == NULL){
+                father.next = addition;
+           }else{
+                buildTree(father.next , addition);
+           }
+        break;
+        case NODE_BINARY_OPERATION:
+            if(father.next == NULL){
+                father.next = addition;
+                addition.left = buildSubTree(addition.left);
+                addition.right= buildSubTree(addition.right);
+            }else{
+                buildTree(father.next , addition);
+            }
+            break;
+        default:        
+           if(father.next == NULL){
+                father.next = addition;
+           }else{
+                buildTree(father.next , addition);
+           }
+    }
+}
 
 // Function to print the AST (for debugging purposes)
 void printAST(ASTNode* node, int indent) {
@@ -92,9 +131,4 @@ void printAST(ASTNode* node, int indent) {
             break;
     }
     printAST(node->next, indent);
-}
-
-void buildTree(ASTNode father,ASTNode childr,ASTNode childl){
-
-
 }
