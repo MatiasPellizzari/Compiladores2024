@@ -1,12 +1,14 @@
 #include <string.h>
+#include "calc-lexico.l"
+
 
 typedef enum {
     NODE_PROGRAM,
-    NODE_FUNCTION,
-    NODE_DECLARATION,
-    NODE_ASSIGNMENT,
+    NODE_FUNCTION, 
+    NODE_DECLARATION, 
+    NODE_ASSIGNMENT, 
     NODE_RETURN,
-    NODE_BINARY_OPERATION,
+    NODE_BINARY_OPERATION, 
     NODE_LITERAL,
     NODE_IDENTIFIER
 } NodeType;
@@ -16,10 +18,20 @@ typedef enum{
     BOOL
 }   ValueType;
 
+typedef enum{
+    VOID,
+    INT,
+    BOOL
+}   ReturnType;
+
 typedef struct ASTNode {
     NodeType type;
     union {
         struct {
+            struct ASTNode* function;
+        } program;
+        struct {
+            ReturnType returntype;
             struct ASTNode* decls;
             struct ASTNode* sents;
         } function;
@@ -33,6 +45,13 @@ typedef struct ASTNode {
             int value;
             ValueType valuetype;
         } declaration;
+        struct {
+            ValueType valuetype;
+            int intvalue;
+        } literal;
+        struct {
+            struct ASTNode* returnvalue;
+        } return_node;
     } data;
     struct ASTNode* next;
 } ASTNode;
@@ -54,44 +73,59 @@ ASTNode* createNode( NodeType type){
             node->data.binaryOperation.left= NULL;
             node->data.binaryOperation.right=NULL;
             break;    
+        case NODE_LITERAL:
+            node->data.literal.valuetype= NULL;
+            node->data.literal.intvalue= NULL;
+            break;             
     }
 }
 
-
-void buildTree(ASTNode father,ASTNODE addition){
-    if(father.type == NODE_FUNCTION){
-        if(addition.type == NODE_DECLARATION){
-            buildTree(father.decls,addition);
-        }else{
-            buildTree(father.sents,addition);
-        }
+/*
+void buildTree(ASTNode* father,ASTNode* addition){
+  if (father->type == NODE_FUNCTION) {  // Use '->' to access type from a pointer
+    if (addition->type == NODE_DECLARATION) {  // Use '->' to access type from a pointer
+        buildTree(father->data.function.decls, addition);  // Access decls using '->'
+    } else {
+        buildTree(father->data.function.sents, addition);  // Access sents using '->'
     }
-    switch(addition.type){
+}
+    switch(addition->type){
         case NODE_DECLARATION:
-           if(father.next == NULL){
-                father.next = addition;
+           if(father->next == NULL){
+                father->next = addition;
            }else{
-                buildTree(father.next , addition);
+                buildTree(father->next , addition);
            }
         break;
         case NODE_BINARY_OPERATION:
-            if(father.next == NULL){
-                father.next = addition;
-                addition.left = buildSubTree(addition.left);
-                addition.right= buildSubTree(addition.right);
+            if(father->next == NULL){
+                father->next = addition;
+                addition->data.binaryOperation.left = buildSubTree(addition->data.binaryOperation.left);
+                addition->data.binaryOperation.right= buildSubTree(addition->data.binaryOperation.right);
             }else{
-                buildTree(father.next , addition);
+                buildTree(father->next , addition);
             }
             break;
         default:        
-           if(father.next == NULL){
-                father.next = addition;
+           if(father->next == NULL){
+                father->next = addition;
            }else{
-                buildTree(father.next , addition);
+                buildTree(father->next , addition);
            }
     }
+    addition->next = NULL;
 }
 
+struct ASTNode* buildSubTree(ASTNode* father){
+    switch(father->type){
+        case NODE_BINARY_OPERATION:
+                father->data.binaryOperation.left = buildSubTree(father->data.binaryOperation.left);
+                father->data.binaryOperation.right= buildSubTree(father->data.binaryOperation.right);
+            break;
+        default:        
+    }
+}
+*/
 // Function to print the AST (for debugging purposes)
 void printAST(ASTNode* node, int indent) {
     if (!node) return;

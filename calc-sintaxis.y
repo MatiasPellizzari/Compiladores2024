@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include tree_builder.c 
+#include "tree_builder.c" 
 
 %}
  
@@ -25,19 +25,33 @@
 %left AND OR
 %%
  
-prog: main_func; 
+prog: main_func { astNode* program = tree_builder.createNode(NODE_PROGRAM);
+                  program->function = $1}
+      ; 
 
-main_func: type MAIN '(' ')' '{' decls sents '}' 
-         | VOID MAIN '(' ')' '{' decls sents '}'
+main_func: type MAIN '(' ')' '{' decls sents '}' { astNode* function = tree_builder.createNode(NODE_PROGRAM);
+                                                   function->returnType = $1;
+                                                   function-> decls = $7;
+                                                   function-> sents = $8; }
+         | VOID MAIN '(' ')' '{' decls sents '}' { astNode* function = tree_builder.createNode(NODE_PROGRAM);
+                                                   function->returnType = $1;
+                                                   function-> decls = $7;
+                                                   function-> sents = $8; }
          ;
 
-decl: type ID ';' { printf("Declaración de variable: %s\n", $2);}
+decl: type ID ';' { printf("Declaración de variable \n");
+                    astNode* declaration = tree_builder.createNode(NODE_DECLARATION);
+                    declaration -> valuetype = $1;
+                    declaration -> identifier = $2;}
     ;
 
 decls: decl
      | decl decls ;
 
-sent: ID '=' expr ';'  { printf("Asignación: %s = %d\n", $1, $3); } 
+sent: ID '=' expr ';'  { printf("Asignación \n");
+                         astNode* asignation = tree_builder.createNode(NODE_DECLARATION);
+                         declaration -> valuetype = $1;
+                         declaration -> identifier = $2; } 
     | RET expr ';'     { printf("Return: %d\n", $2); }
     ;
 
