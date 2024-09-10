@@ -27,7 +27,6 @@ ASTNode* createNode( NodeType type){
 }
 
 
-
 // Function to print the AST (for debugging purposes)
 void printAST(ASTNode* node, int indent) {
     if (!node) return;
