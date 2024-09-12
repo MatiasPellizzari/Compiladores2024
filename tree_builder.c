@@ -16,6 +16,10 @@ ASTNode* createNode( NodeType type){
             node->data.declaration.identifier= NULL;
             node->data.declaration.value= 0;
             break;
+        case NODE_ASSIGNMENT:
+            node->data.assignment.identifier= NULL;
+            node->data.assignment.value= 0;
+            break;       
         case NODE_BINARY_OPERATION:
             node->data.binaryOperation.left= NULL;
             node->data.binaryOperation.right=NULL;

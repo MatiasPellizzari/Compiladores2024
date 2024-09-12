@@ -6,7 +6,7 @@
 %}
 
 %union { 
-    ASTNode *Node; 
+    ASTNode* Node; 
     char *id;
     int value; 
 }
@@ -18,41 +18,42 @@
 %token BOOL
 %token MAIN VOID RET
 
-%type <Node> prog main_func decl decls sent sents type expr
-%type <int> VALOR boolean
+%type <Node> prog main_func decl decls sent sents  expr
+%type <int> type VALOR boolean
 
 %left '+' '-'
 %left '*'
 %left AND OR
 %%
  
-prog: main_func { astNode* program = tree_builder.createNode(NODE_PROGRAM);
-                  program->function = $1}
+prog: main_func { ASTNode* program = createNode(NODE_PROGRAM);
+                  program->function = $1;}
       ; 
 
-main_func: type MAIN '(' ')' '{' decls sents '}' { astNode* function = tree_builder.createNode(NODE_PROGRAM);
-                                                   function->returnType = $1;
-                                                   function-> decls = $7;
-                                                   function-> sents = $8; }
-         | VOID MAIN '(' ')' '{' decls sents '}' { astNode* function = tree_builder.createNode(NODE_PROGRAM);
-                                                   function->returnType = $1;
-                                                   function-> decls = $7;
-                                                   function-> sents = $8; }
+main_func: type MAIN '(' ')' '{' decls sents '}' { ASTNode* function = createNode(NODE_PROGRAM);
+                                                   function->data.function.returnType = $1;
+                                                   function->data.function.decls = $6;
+                                                   function->data.function.sents = $7; }
+         | VOID MAIN '(' ')' '{' decls sents '}' { ASTNode* function = createNode(NODE_PROGRAM);
+                                                   function->data.function.returnType = VOID;
+                                                   function->data.function.decls = $6;
+                                                   function->data.function.sents = $7; }
          ;
 
 decl: type ID ';' { printf("Declaración de variable \n");
-                    astNode* declaration = tree_builder.createNode(NODE_DECLARATION);
-                    declaration -> valuetype = $1;
-                    declaration -> identifier = $2;}
+                    ASTNode* declaration = createNode(NODE_DECLARATION);
+                    declaration->data.declaration.valuetype = $1;
+                    declaration->data.declaration.identifier = $2;
+                    }
     ;
 
 decls: decl
      | decl decls;
 
 sent: ID '=' expr ';'  { printf("Asignación \n");
-                         astNode* asignation = tree_builder.createNode(NODE_DECLARATION);
-                         declaration -> valuetype = $1;
-                         declaration -> identifier = $2; } 
+                         ASTNode* assignment = createNode(NODE_ASSIGNMENT);
+                         assignment -> data.assignment.valuetype = $1;
+                         assignment -> data.assignment.identifier = $3; } 
     | RET expr ';'     { printf("Return: %d\n", $2); }
     ;
 
@@ -112,10 +113,16 @@ expr: VALOR {
 
 
 
-VALOR: INT { $$ = $1; }
+VALOR: INT { $$ =createNode(NODE_LITERAL);
+             $$->data.literal.value = $1;
+             $$->data.literal.valuetype = INTVALUE; }
     ;
 
-boolean: TRUE { $$ = 1; }
-       | FALSE { $$ = 0; }
+boolean: TRUE { $$ =createNode(NODE_LITERAL);
+                $$->data.literal.value = 1;
+                $$->data.literal.valuetype = BOOLVALUE; }
+       | FALSE { $$ =createNode(NODE_LITERAL);
+                 $$->data.literal.value = 0;
+                 $$->data.literal.valuetype = BOOLVALUE; }
     ;      
 %%

@@ -69,29 +69,12 @@
 /* First part of user prologue.  */
 #line 1 "calc-sintaxis.y"
 
+#include "tree_builder.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "tree_builder.h"
 
-typedef enum {
-    NODE_PROGRAM,
-    NODE_FUNCTION,
-    NODE_DECLARATION,
-    NODE_ASSIGNMENT,
-    NODE_RETURN,
-    NODE_BINARY_OPERATION,
-    NODE_LITERAL,
-    NODE_IDENTIFIER
-} NodeType;
-
-typedef enum{
-    INTVALUE,
-    BOOLVALUE
-}   ValueType;
-
-
-#line 95 "calc-sintaxis.tab.c"
+#line 78 "calc-sintaxis.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -539,9 +522,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    46,    46,    48,    49,    52,    58,    59,    61,    62,
-      65,    66,    68,    69,    72,    76,    82,    88,    94,    97,
-     103,   109,   113,   121,   124,   125
+       0,    29,    29,    33,    37,    43,    50,    51,    53,    57,
+      60,    61,    63,    64,    67,    71,    77,    83,    89,    92,
+      98,   104,   108,   116,   121,   124
 };
 #endif
 
@@ -1133,62 +1116,79 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 2: /* prog: main_func  */
+#line 29 "calc-sintaxis.y"
+                { ASTNode* program = createNode(NODE_PROGRAM);
+                  program->function = (yyvsp[0].Node);}
+#line 1124 "calc-sintaxis.tab.c"
+    break;
+
   case 3: /* main_func: type MAIN '(' ')' '{' decls sents '}'  */
-#line 48 "calc-sintaxis.y"
-                                                 { (yyval.Node) = (yyvsp[-7].Node); }
-#line 1140 "calc-sintaxis.tab.c"
+#line 33 "calc-sintaxis.y"
+                                                 { ASTNode* function = createNode(NODE_PROGRAM);
+                                                   function->data.function.returnType = (yyvsp[-7].int);
+                                                   function->data.function.decls = (yyvsp[-2].Node);
+                                                   function->data.function.sents = (yyvsp[-1].Node); }
+#line 1133 "calc-sintaxis.tab.c"
     break;
 
   case 4: /* main_func: VOID MAIN '(' ')' '{' decls sents '}'  */
-#line 49 "calc-sintaxis.y"
-                                                 { (yyval.Node) = NULL; }
-#line 1146 "calc-sintaxis.tab.c"
+#line 37 "calc-sintaxis.y"
+                                                 { ASTNode* function = createNode(NODE_PROGRAM);
+                                                   function->data.function.returnType = VOID;
+                                                   function->data.function.decls = (yyvsp[-2].Node);
+                                                   function->data.function.sents = (yyvsp[-1].Node); }
+#line 1142 "calc-sintaxis.tab.c"
     break;
 
   case 5: /* decl: type ID ';'  */
-#line 52 "calc-sintaxis.y"
-                  { 
-          (yyval.Node) = createNode(NODE_DECLARATION); 
-          (yyval.Node)->data.declaration.value = (yyvsp[-2].Node); 
-      }
-#line 1155 "calc-sintaxis.tab.c"
+#line 43 "calc-sintaxis.y"
+                  { printf("Declaración de variable \n");
+                    ASTNode* declaration = createNode(NODE_DECLARATION);
+                    declaration->data.declaration.valuetype = (yyvsp[-2].int);
+                    declaration->data.declaration.identifier = (yyvsp[-1].name);
+                    }
+#line 1152 "calc-sintaxis.tab.c"
     break;
 
   case 8: /* sent: ID '=' expr ';'  */
-#line 61 "calc-sintaxis.y"
-                       { printf("Asignación: %s = %d\n", (yyvsp[-3].name), (yyvsp[-1].Node)); }
+#line 53 "calc-sintaxis.y"
+                       { printf("Asignación \n");
+                         ASTNode* assignment = createNode(NODE_ASSIGNMENT);
+                         assignment -> data.assignment.valuetype = (yyvsp[-3].name);
+                         assignment -> data.assignment.identifier = (yyvsp[-1].Node); }
 #line 1161 "calc-sintaxis.tab.c"
     break;
 
   case 9: /* sent: RET expr ';'  */
-#line 62 "calc-sintaxis.y"
+#line 57 "calc-sintaxis.y"
                        { printf("Return: %d\n", (yyvsp[-1].Node)); }
 #line 1167 "calc-sintaxis.tab.c"
     break;
 
   case 12: /* type: INT  */
-#line 68 "calc-sintaxis.y"
-           { (yyval.Node) = 1; }
+#line 63 "calc-sintaxis.y"
+           { (yyval.int) = 1; }
 #line 1173 "calc-sintaxis.tab.c"
     break;
 
   case 13: /* type: BOOL  */
-#line 69 "calc-sintaxis.y"
-           { (yyval.Node) = 0; }
+#line 64 "calc-sintaxis.y"
+           { (yyval.int) = 0; }
 #line 1179 "calc-sintaxis.tab.c"
     break;
 
   case 14: /* expr: VALOR  */
-#line 72 "calc-sintaxis.y"
+#line 67 "calc-sintaxis.y"
             { 
-          (yyval.Node) = createNode(NODE_DECLARATION); 
+          (yyval.Node) = createNode(NODE_LITERAL); 
           (yyval.Node)->data.declaration.value = (yyvsp[0].int); 
       }
 #line 1188 "calc-sintaxis.tab.c"
     break;
 
   case 15: /* expr: expr '+' expr  */
-#line 76 "calc-sintaxis.y"
+#line 71 "calc-sintaxis.y"
                     { 
           (yyval.Node) = createNode(NODE_BINARY_OPERATION); 
           (yyval.Node)->data.binaryOperation.left = (yyvsp[-2].Node);
@@ -1199,7 +1199,7 @@ yyreduce:
     break;
 
   case 16: /* expr: expr '*' expr  */
-#line 82 "calc-sintaxis.y"
+#line 77 "calc-sintaxis.y"
                     { 
           (yyval.Node) = createNode(NODE_BINARY_OPERATION); 
           (yyval.Node)->data.binaryOperation.left = (yyvsp[-2].Node);
@@ -1210,7 +1210,7 @@ yyreduce:
     break;
 
   case 17: /* expr: expr '-' expr  */
-#line 88 "calc-sintaxis.y"
+#line 83 "calc-sintaxis.y"
                     { 
           (yyval.Node) = createNode(NODE_BINARY_OPERATION); 
           (yyval.Node)->data.binaryOperation.left = (yyvsp[-2].Node);
@@ -1221,7 +1221,7 @@ yyreduce:
     break;
 
   case 18: /* expr: '(' expr ')'  */
-#line 94 "calc-sintaxis.y"
+#line 89 "calc-sintaxis.y"
                    { 
           (yyval.Node) = (yyvsp[-1].Node); 
       }
@@ -1229,7 +1229,7 @@ yyreduce:
     break;
 
   case 19: /* expr: expr AND expr  */
-#line 97 "calc-sintaxis.y"
+#line 92 "calc-sintaxis.y"
                     { 
           (yyval.Node) = createNode(NODE_BINARY_OPERATION); 
           (yyval.Node)->data.binaryOperation.left = (yyvsp[-2].Node);
@@ -1240,7 +1240,7 @@ yyreduce:
     break;
 
   case 20: /* expr: expr OR expr  */
-#line 103 "calc-sintaxis.y"
+#line 98 "calc-sintaxis.y"
                    { 
           (yyval.Node) = createNode(NODE_BINARY_OPERATION); 
           (yyval.Node)->data.binaryOperation.left = (yyvsp[-2].Node);
@@ -1251,7 +1251,7 @@ yyreduce:
     break;
 
   case 21: /* expr: ID  */
-#line 109 "calc-sintaxis.y"
+#line 104 "calc-sintaxis.y"
          { 
           (yyval.Node) = createNode(NODE_DECLARATION); 
           (yyval.Node)->data.declaration.identifier = (yyvsp[0].name); 
@@ -1260,7 +1260,7 @@ yyreduce:
     break;
 
   case 22: /* expr: boolean  */
-#line 113 "calc-sintaxis.y"
+#line 108 "calc-sintaxis.y"
               { 
           (yyval.Node) = createNode(NODE_DECLARATION); 
           (yyval.Node)->data.declaration.value = (yyvsp[0].int); 
@@ -1269,25 +1269,31 @@ yyreduce:
     break;
 
   case 23: /* VALOR: INT  */
-#line 121 "calc-sintaxis.y"
-           { (yyval.int) = (yyvsp[0].ival); }
-#line 1275 "calc-sintaxis.tab.c"
+#line 116 "calc-sintaxis.y"
+           { (yyval.int) =createNode(NODE_LITERAL);
+             (yyval.int)->data.literal.value = (yyvsp[0].ival);
+             (yyval.int)->data.literal.valuetype = INTVALUE; }
+#line 1277 "calc-sintaxis.tab.c"
     break;
 
   case 24: /* boolean: TRUE  */
-#line 124 "calc-sintaxis.y"
-              { (yyval.int) = 1; }
-#line 1281 "calc-sintaxis.tab.c"
+#line 121 "calc-sintaxis.y"
+              { (yyval.int) =createNode(NODE_LITERAL);
+                (yyval.int)->data.literal.value = 1;
+                (yyval.int)->data.literal.valuetype = BOOLVALUE; }
+#line 1285 "calc-sintaxis.tab.c"
     break;
 
   case 25: /* boolean: FALSE  */
-#line 125 "calc-sintaxis.y"
-               { (yyval.int) = 0; }
-#line 1287 "calc-sintaxis.tab.c"
+#line 124 "calc-sintaxis.y"
+               { (yyval.int) =createNode(NODE_LITERAL);
+                 (yyval.int)->data.literal.value = 0;
+                 (yyval.int)->data.literal.valuetype = BOOLVALUE; }
+#line 1293 "calc-sintaxis.tab.c"
     break;
 
 
-#line 1291 "calc-sintaxis.tab.c"
+#line 1297 "calc-sintaxis.tab.c"
 
       default: break;
     }
@@ -1480,4 +1486,4 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 127 "calc-sintaxis.y"
+#line 128 "calc-sintaxis.y"

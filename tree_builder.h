@@ -14,13 +14,15 @@ typedef enum {
 
 typedef enum{
     INTVALUE,
-    BOOLVALUE
+    BOOLVALUE,
+    JUSTVOID
 } ValueType;
 
 typedef struct ASTNode {
     NodeType type;
     union {
         struct {
+            ValueType returnType;
             struct ASTNode* decls;
             struct ASTNode* sents;
         } function;
@@ -34,6 +36,11 @@ typedef struct ASTNode {
             int value;
             ValueType valuetype;
         } declaration;
+        struct{
+            char* identifier; 
+            int value;
+            ValueType valuetype;
+        } assignment;
          struct{
             int value;
             ValueType valuetype;

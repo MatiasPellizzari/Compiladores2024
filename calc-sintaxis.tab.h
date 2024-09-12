@@ -73,9 +73,9 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 25 "calc-sintaxis.y"
+#line 8 "calc-sintaxis.y"
  
-    ASTNode *Node; 
+    ASTNode* Node; 
     char *id;
     int value; 
 
