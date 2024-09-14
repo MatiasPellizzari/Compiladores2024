@@ -60,8 +60,8 @@ extern int yydebug;
     ID = 261,                      /* ID  */
     TMENOS = 262,                  /* TMENOS  */
     BOOL = 263,                    /* BOOL  */
-    MAIN = 264,                    /* MAIN  */
-    VOID = 265,                    /* VOID  */
+    VOID = 264,                    /* VOID  */
+    MAIN = 265,                    /* MAIN  */
     RET = 266,                     /* RET  */
     AND = 267,                     /* AND  */
     OR = 268                       /* OR  */
@@ -73,13 +73,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 8 "calc-sintaxis.y"
+#line 11 "calc-sintaxis.y"
  
-    ASTNode* Node; 
+    struct ASTNode* Node; ; 
     char *id;
     int value; 
+    ValueType valuetype;
 
-#line 83 "calc-sintaxis.tab.h"
+#line 84 "calc-sintaxis.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

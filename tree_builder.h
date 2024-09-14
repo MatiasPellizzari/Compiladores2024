@@ -1,6 +1,6 @@
 #ifndef TREE_BUILDER_H
 #define TREE_BUILDER_H
-
+//#pragma message("tree_builder.h included")
 typedef enum {
     NODE_PROGRAM,
     NODE_FUNCTION,

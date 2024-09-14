@@ -3,23 +3,28 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#define VOIDTYPE JUSTVOID
+int yylex();
+void yyerror(const char *s);
 %}
 
 %union { 
-    ASTNode* Node; 
+    struct ASTNode* Node; ; 
     char *id;
     int value; 
+    ValueType valuetype;
 }
 
-%token <ival> INT
+%token <value> INT
 %token TRUE FALSE
-%token <name> ID
+%token <id> ID
 %token TMENOS
 %token BOOL
-%token MAIN VOID RET
+%token VOID 
+%token MAIN RET
 
 %type <Node> prog main_func decl decls sent sents  expr
-%type <int> type VALOR boolean
+%type <valuetype> type VALOR boolean
 
 %left '+' '-'
 %left '*'
@@ -27,7 +32,9 @@
 %%
  
 prog: main_func { ASTNode* program = createNode(NODE_PROGRAM);
-                  program->function = $1;}
+                  program->data.function.returnType = $1->data.function.returnType;
+                  program->data.function.decls = $1->data.function.decls;
+                  program->data.function.sents = $1->data.function.sents;}
       ; 
 
 main_func: type MAIN '(' ')' '{' decls sents '}' { ASTNode* function = createNode(NODE_PROGRAM);
@@ -35,7 +42,7 @@ main_func: type MAIN '(' ')' '{' decls sents '}' { ASTNode* function = createNod
                                                    function->data.function.decls = $6;
                                                    function->data.function.sents = $7; }
          | VOID MAIN '(' ')' '{' decls sents '}' { ASTNode* function = createNode(NODE_PROGRAM);
-                                                   function->data.function.returnType = VOID;
+                                                   function->data.function.returnType = VOIDTYPE;
                                                    function->data.function.decls = $6;
                                                    function->data.function.sents = $7; }
          ;
@@ -52,33 +59,33 @@ decls: decl
 
 sent: ID '=' expr ';'  { printf("Asignación \n");
                          ASTNode* assignment = createNode(NODE_ASSIGNMENT);
-                         assignment -> data.assignment.valuetype = $1;
-                         assignment -> data.assignment.identifier = $3; } 
+                         assignment -> data.assignment.identifier= $1;
+                         assignment -> data.assignment.valuetype = $3; } 
     | RET expr ';'     { printf("Return: %d\n", $2); }
     ;
 
 sents: sent
      | sent sents;
 
-type: INT  { $$ = 1; }
-    | BOOL { $$ = 0; }
+type: INT  { $$ = INTVALUE; }
+    | BOOL { $$ = BOOLVALUE; }
     ;
 
 expr: VALOR { 
-          $$ = createNode(NODE_LITERAL); 
-          $$->data.declaration.value = $1; 
+           ASTNode* literal = createNode(NODE_LITERAL); 
+           literal -> data.literal.value = $1; 
       }
     | expr '+' expr { 
-          $$ = createNode(NODE_BINARY_OPERATION); 
-          $$->data.binaryOperation.left = $1;
-          $$->data.binaryOperation.right = $3;
-          $$->data.binaryOperation.operator = '+'; 
+          ASTNode* addition  = createNode(NODE_BINARY_OPERATION); 
+          addition -> data.binaryOperation.left = $1;
+          addition -> data.binaryOperation.right = $3;
+          addition -> data.binaryOperation.operator = '+'; 
       }
     | expr '*' expr { 
-          $$ = createNode(NODE_BINARY_OPERATION); 
-          $$->data.binaryOperation.left = $1;
-          $$->data.binaryOperation.right = $3;
-          $$->data.binaryOperation.operator = '*'; 
+          ASTNode* multiplication = createNode(NODE_BINARY_OPERATION); 
+          multiplication -> data.binaryOperation.left = $1 ;
+          multiplication -> data.binaryOperation.right = $3 ;
+          multiplication -> data.binaryOperation.operator = '*'; 
       }
     | expr '-' expr { 
           $$ = createNode(NODE_BINARY_OPERATION); 
@@ -102,27 +109,25 @@ expr: VALOR {
           $$->data.binaryOperation.operator = 'O'; 
       }
     | ID { 
-          $$ = createNode(NODE_DECLARATION); 
-          $$->data.declaration.identifier = $1; 
+          ASTNode*  declaration = createNode(NODE_DECLARATION); 
+          declaration ->data.declaration.identifier = $1; 
       }
     | boolean { 
-          $$ = createNode(NODE_DECLARATION); 
-          $$->data.declaration.value = $1; 
+          ASTNode* literal = createNode(NODE_LITERAL); 
+           literal -> data.literal.value = $1;  
       }
     ;
 
-
-
-VALOR: INT { $$ =createNode(NODE_LITERAL);
-             $$->data.literal.value = $1;
-             $$->data.literal.valuetype = INTVALUE; }
-    ;
-
-boolean: TRUE { $$ =createNode(NODE_LITERAL);
-                $$->data.literal.value = 1;
-                $$->data.literal.valuetype = BOOLVALUE; }
-       | FALSE { $$ =createNode(NODE_LITERAL);
-                 $$->data.literal.value = 0;
-                 $$->data.literal.valuetype = BOOLVALUE; }
+VALOR: INT { 
+    ASTNode*  literal = createNode(NODE_LITERAL);
+    literal->data.literal.value = $1;
+    literal->data.literal.valuetype = INTVALUE; 
+}
+boolean: TRUE { ASTNode* literal =createNode(NODE_LITERAL);
+                literal ->data.literal.value = 1;
+                literal ->data.literal.valuetype = BOOLVALUE; }
+       | FALSE { ASTNode* literal =createNode(NODE_LITERAL);
+                 literal ->data.literal.value = 0;
+                 literal ->data.literal.valuetype = BOOLVALUE; }
     ;      
 %%

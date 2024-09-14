@@ -28,6 +28,7 @@ ASTNode* createNode( NodeType type){
             node->data.literal.value= 0;
             break;    
     }
+    return node;
 }
 
 
@@ -50,7 +51,7 @@ void printAST(ASTNode* node, int indent) {
             printf("Declaration: %s\n", node->data.declaration.identifier);
             break;
         case NODE_ASSIGNMENT:
-            printf("Assignment: %s\n", node->data.declaration.identifier);
+            printf("Assignment: %s\n", node->data.assignment.identifier);
             printAST(node->data.binaryOperation.right, indent + 1);
             break;
         case NODE_RETURN:
@@ -63,7 +64,7 @@ void printAST(ASTNode* node, int indent) {
             printAST(node->data.binaryOperation.right, indent + 1);
             break;
         case NODE_LITERAL:
-            printf("Literal: %d\n", node->data.declaration.value);
+            printf("Literal: %d\n", node->data.literal.value);
             break;
         case NODE_IDENTIFIER:
             printf("Identifier: %s\n", node->data.declaration.identifier);
