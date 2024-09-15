@@ -1161,7 +1161,7 @@ yyreduce:
                        { printf("Asignación \n");
                          ASTNode* assignment = createNode(NODE_ASSIGNMENT);
                          assignment -> data.assignment.identifier= (yyvsp[-3].id);
-                         assignment -> data.assignment.valuetype = (yyvsp[-1].Node); }
+                         assignment -> data.assignment.valuetype = (yyvsp[-1].Node)->data.literal.valuetype; }
 #line 1166 "calc-sintaxis.tab.c"
     break;
 

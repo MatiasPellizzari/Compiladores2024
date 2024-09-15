@@ -12,7 +12,7 @@ void yyerror(const char *s);
     struct ASTNode* Node; ; 
     char *id;
     int value; 
-    ValueType valuetype;
+     ValueType valuetype;
 }
 
 %token <value> INT
@@ -60,7 +60,7 @@ decls: decl
 sent: ID '=' expr ';'  { printf("Asignación \n");
                          ASTNode* assignment = createNode(NODE_ASSIGNMENT);
                          assignment -> data.assignment.identifier= $1;
-                         assignment -> data.assignment.valuetype = $3; } 
+                         assignment -> data.assignment.valuetype = $3->data.literal.valuetype; } 
     | RET expr ';'     { printf("Return: %d\n", $2); }
     ;
 

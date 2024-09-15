@@ -78,7 +78,7 @@ union YYSTYPE
     struct ASTNode* Node; ; 
     char *id;
     int value; 
-    ValueType valuetype;
+     ValueType valuetype;
 
 #line 84 "calc-sintaxis.tab.h"
 

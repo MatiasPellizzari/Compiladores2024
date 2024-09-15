@@ -42,6 +42,7 @@ typedef struct ASTNode {
             ValueType valuetype;
         } assignment;
          struct{
+            char* identifier; 
             int value;
             ValueType valuetype;
         } literal;
