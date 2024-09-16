@@ -38,19 +38,21 @@ typedef struct ASTNode {
         } declaration;
         struct{
             char* identifier; 
-            int value;
-            ValueType valuetype;
+            struct ASTNode* value;
         } assignment;
          struct{
             char* identifier; 
             int value;
             ValueType valuetype;
         } literal;
+        struct{
+            struct ASTNode* returnvalue;
+        } returnnode;
     } data;
     struct ASTNode* next;
 } ASTNode;
 
 ASTNode* createNode(NodeType type);
-void printAST(ASTNode* node, int indent);
+void printAST(ASTNode* node);
 
 #endif

@@ -41,17 +41,20 @@ digito [0-9]
 
 
 {digito}+                     { 
-                                printf("INT : %d\n",atoi(yytext)); 
+                                //printf("INT : %d\n",atoi(yytext)); 
+								yylval.value = atoi(yytext);
                                 return INT;}
 
 {letra}({letra}|{digito})*    { 
-                                printf("ID : %s\n",yytext);
+                               // printf("ID : %s\n",yytext);
+							   yylval.id = (char *) malloc(yyleng +1);
+								strcpy ((char *) yylval.id , yytext);
                                 return ID;}
 
-"-"                       {  printf("%s\n",yytext);
+"-"                       {  //printf("%s\n",yytext);
                                   return TMENOS;}    
 
-[+*;(){}=]                   {  printf("%s\n",yytext);
+[+*;(){}=]                   {  //printf("%s\n",yytext);
                                   return *yytext;}
 
 .|\n                          ; /* ignore all the rest */

@@ -32,43 +32,57 @@ ASTNode* createNode( NodeType type){
 }
 
 
-// Function to print the AST (for debugging purposes)
-void printAST(ASTNode* node, int indent) {
+// Function to print the AST (for debugging purposes) without indentation
+void printAST(ASTNode* node) {
     if (!node) return;
-    for (int i = 0; i < indent; i++) printf("  ");
+
     switch (node->type) {
         case NODE_PROGRAM:
-            printf("Program\n");
-            printAST(node->data.function.decls, indent + 1);
-            printAST(node->data.function.sents, indent + 1);
+            printf("Program:\n");
+            printAST(node->data.function.decls);  // Print declarations
+            printAST(node->data.function.sents);  // Print statements
             break;
+
         case NODE_FUNCTION:
-            printf("Function\n");
-            printAST(node->data.function.decls, indent + 1);
-            printAST(node->data.function.sents, indent + 1);
+            printf("Function:\n");
+            printAST(node->data.function.decls);  // Print declarations inside the function
+            printAST(node->data.function.sents);  // Print function body statements
             break;
+
         case NODE_DECLARATION:
-            printf("Declaration: %s\n", node->data.declaration.identifier);
+            printf("Declaration: %s\n", node->data.declaration.identifier);  // Print identifier
             break;
+
         case NODE_ASSIGNMENT:
-            printf("Assignment: %s\n", node->data.assignment.identifier);
-            printAST(node->data.binaryOperation.right, indent + 1);
+            printf("Assignment: %s = \n", node->data.assignment.identifier);  // Print variable being assigned
+            printAST(node->data.assignment.value);
+            //printf("ValueType: %d\n", node->data.assignment.valuetype);  // Print the value type (not an AST node)
             break;
+
         case NODE_RETURN:
-            printf("Return\n");
-            printAST(node->data.binaryOperation.left, indent + 1);
+            printf("Return:\n");
+            printAST(node->data.returnnode.returnvalue);  // Print return value (an AST node)
             break;
+
         case NODE_BINARY_OPERATION:
-            printf("Binary Operation: %c\n", node->data.binaryOperation.operator);
-            printAST(node->data.binaryOperation.left, indent + 1);
-            printAST(node->data.binaryOperation.right, indent + 1);
+            printf("Binary Operation: %c\n", node->data.binaryOperation.operator);  // Print operator
+            printAST(node->data.binaryOperation.left);  // Print left operand
+            printAST(node->data.binaryOperation.right);  // Print right operand
             break;
+
         case NODE_LITERAL:
-            printf("Literal: %d\n", node->data.literal.value);
+            printf("Literal: %d\n", node->data.literal.value);  // Print literal value
             break;
+
         case NODE_IDENTIFIER:
-            printf("Identifier: %s\n", node->data.declaration.identifier);
+            printf("Identifier: %s\n", node->data.declaration.identifier);  // Print identifier name
+            break;
+
+        default:
+            printf("Unknown node type!\n");  // Handle any unknown node types
             break;
     }
-    printAST(node->next, indent);
+
+    // Move to the next node in the list (if any)
+    printAST(node->next);
 }
