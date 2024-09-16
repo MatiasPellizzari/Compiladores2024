@@ -66,7 +66,7 @@ decls: decl { $$ = $1; }
 sent: ID '=' expr ';'  { //printf("Asignación \n");
                          ASTNode* assignment = createNode(NODE_ASSIGNMENT);
                          assignment -> data.assignment.identifier= $1;
-                         assignment -> data.assignment.value = $3
+                         assignment -> data.assignment.value = $3;
                          $$= assignment; } 
     | RET expr ';'     { //printf("Return: %d\n", $2); 
                          ASTNode* returnnode = createNode(NODE_RETURN);
