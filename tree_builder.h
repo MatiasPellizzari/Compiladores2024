@@ -1,5 +1,7 @@
 #ifndef TREE_BUILDER_H
 #define TREE_BUILDER_H
+#include "value_table.c"
+
 //#pragma message("tree_builder.h included")
 typedef enum {
     NODE_PROGRAM,

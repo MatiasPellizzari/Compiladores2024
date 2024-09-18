@@ -3,6 +3,7 @@
     "files.associations": {
         "tree_builder.h": "c",
         "string.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "type_traits": "c"
     }
 }

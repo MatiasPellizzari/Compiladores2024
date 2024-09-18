@@ -1,11 +1,16 @@
 %{
 #include "tree_builder.h"
+#include "value_table.c"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#define VOIDTYPE JUSTVOID
+#define VOIDTYPE JUSTVOID 
 int yylex();
 void yyerror(const char *s);
+struct Tuple* head;
+void initializehead() {
+    head = (struct Tuple*)malloc(sizeof(struct Tuple));
+}
 %}
 
 %union { 
@@ -54,6 +59,7 @@ decl: type ID ';' { //printf("Declaración de variable \n");
                     ASTNode* declaration = createNode(NODE_DECLARATION);
                     declaration->data.declaration.valuetype = $1;
                     declaration->data.declaration.identifier = $2;
+                    insertToTable(declaration->data.declaration.identifier,declaration->data.declaration.valuetype,0,head);
                     $$=declaration;
                     }
     ;
