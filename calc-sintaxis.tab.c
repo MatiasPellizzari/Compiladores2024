@@ -77,9 +77,9 @@
 #define VOIDTYPE JUSTVOID 
 int yylex();
 void yyerror(const char *s);
-struct Tuple* head;
+struct Node* head;
 void initializehead() {
-    head = (struct Tuple*)malloc(sizeof(struct Tuple));
+    head = (struct Node*)malloc(sizeof(struct Node));
 }
 
 #line 86 "calc-sintaxis.tab.c"
@@ -530,9 +530,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    39,    39,    46,    51,    58,    67,    68,    72,    77,
-      84,    85,    89,    90,    93,    98,   105,   112,   118,   121,
-     127,   133,   138,   145,   151,   155
+       0,    40,    40,    50,    55,    62,    72,    73,    77,    83,
+      90,    91,    95,    96,    99,   104,   111,   118,   124,   127,
+     133,   139,   144,   151,   157,   161
 };
 #endif
 
@@ -1125,119 +1125,124 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* prog: main_func  */
-#line 39 "calc-sintaxis.y"
-                { ASTNode* program = createNode(NODE_PROGRAM);
+#line 40 "calc-sintaxis.y"
+                { freeList(head);
+                  initializehead();
+                  ASTNode* program = createNode(NODE_PROGRAM);
                   program->data.function.returnType = (yyvsp[0].Node)->data.function.returnType;
                   program->data.function.decls = (yyvsp[0].Node)->data.function.decls;
                   program->data.function.sents = (yyvsp[0].Node)->data.function.sents;
-                  printAST(program);}
-#line 1135 "calc-sintaxis.tab.c"
+                  printAST(program);
+                  printList(head);}
+#line 1138 "calc-sintaxis.tab.c"
     break;
 
   case 3: /* main_func: type MAIN '(' ')' '{' decls sents '}'  */
-#line 46 "calc-sintaxis.y"
+#line 50 "calc-sintaxis.y"
                                                  { ASTNode* function = createNode(NODE_PROGRAM);
                                                    function->data.function.returnType = (yyvsp[-7].valuetype);
                                                    function->data.function.decls = (yyvsp[-2].Node);
                                                    function->data.function.sents = (yyvsp[-1].Node);
                                                    (yyval.Node)=function; }
-#line 1145 "calc-sintaxis.tab.c"
+#line 1148 "calc-sintaxis.tab.c"
     break;
 
   case 4: /* main_func: VOID MAIN '(' ')' '{' decls sents '}'  */
-#line 51 "calc-sintaxis.y"
+#line 55 "calc-sintaxis.y"
                                                  { ASTNode* function = createNode(NODE_PROGRAM);
                                                    function->data.function.returnType = VOIDTYPE;
                                                    function->data.function.decls = (yyvsp[-2].Node);
                                                    function->data.function.sents = (yyvsp[-1].Node);
                                                    (yyval.Node)=function; }
-#line 1155 "calc-sintaxis.tab.c"
+#line 1158 "calc-sintaxis.tab.c"
     break;
 
   case 5: /* decl: type ID ';'  */
-#line 58 "calc-sintaxis.y"
+#line 62 "calc-sintaxis.y"
                   { //printf("Declaración de variable \n");
                     ASTNode* declaration = createNode(NODE_DECLARATION);
                     declaration->data.declaration.valuetype = (yyvsp[-2].valuetype);
                     declaration->data.declaration.identifier = (yyvsp[-1].id);
                     insertToTable(declaration->data.declaration.identifier,declaration->data.declaration.valuetype,0,head);
+                    declaration->data.declaration.tableposition = searchId(declaration->data.declaration.identifier,head);
                     (yyval.Node)=declaration;
                     }
-#line 1167 "calc-sintaxis.tab.c"
+#line 1171 "calc-sintaxis.tab.c"
     break;
 
   case 6: /* decls: decl  */
-#line 67 "calc-sintaxis.y"
+#line 72 "calc-sintaxis.y"
             { (yyval.Node) = (yyvsp[0].Node); }
-#line 1173 "calc-sintaxis.tab.c"
+#line 1177 "calc-sintaxis.tab.c"
     break;
 
   case 7: /* decls: decl decls  */
-#line 68 "calc-sintaxis.y"
+#line 73 "calc-sintaxis.y"
                   { 
                      (yyvsp[-1].Node)->next = (yyvsp[0].Node);
                      (yyval.Node) = (yyvsp[-1].Node);  }
-#line 1181 "calc-sintaxis.tab.c"
+#line 1185 "calc-sintaxis.tab.c"
     break;
 
   case 8: /* sent: ID '=' expr ';'  */
-#line 72 "calc-sintaxis.y"
+#line 77 "calc-sintaxis.y"
                        { //printf("Asignación \n");
                          ASTNode* assignment = createNode(NODE_ASSIGNMENT);
-                         assignment -> data.assignment.identifier= (yyvsp[-3].id);
+                         assignment -> data.assignment.receiver= (yyvsp[-3].id) ;
+                         assignment -> data.assignment.tableposition= searchId(assignment -> data.assignment.receiver,head);
                          assignment -> data.assignment.value = (yyvsp[-1].Node);
                          (yyval.Node)= assignment; }
-#line 1191 "calc-sintaxis.tab.c"
+#line 1196 "calc-sintaxis.tab.c"
     break;
 
   case 9: /* sent: RET expr ';'  */
-#line 77 "calc-sintaxis.y"
+#line 83 "calc-sintaxis.y"
                        { //printf("Return: %d\n", $2); 
                          ASTNode* returnnode = createNode(NODE_RETURN);
                          returnnode -> data.returnnode.returnvalue= (yyvsp[-1].Node);
                          (yyval.Node)= returnnode;
                           }
-#line 1201 "calc-sintaxis.tab.c"
+#line 1206 "calc-sintaxis.tab.c"
     break;
 
   case 10: /* sents: sent  */
-#line 84 "calc-sintaxis.y"
+#line 90 "calc-sintaxis.y"
             { (yyval.Node) = (yyvsp[0].Node); }
-#line 1207 "calc-sintaxis.tab.c"
+#line 1212 "calc-sintaxis.tab.c"
     break;
 
   case 11: /* sents: sent sents  */
-#line 85 "calc-sintaxis.y"
+#line 91 "calc-sintaxis.y"
                    { 
                      (yyvsp[-1].Node)->next = (yyvsp[0].Node);
                      (yyval.Node) = (yyvsp[-1].Node);  }
-#line 1215 "calc-sintaxis.tab.c"
+#line 1220 "calc-sintaxis.tab.c"
     break;
 
   case 12: /* type: INT  */
-#line 89 "calc-sintaxis.y"
+#line 95 "calc-sintaxis.y"
            { (yyval.valuetype) = INTVALUE; }
-#line 1221 "calc-sintaxis.tab.c"
+#line 1226 "calc-sintaxis.tab.c"
     break;
 
   case 13: /* type: BOOL  */
-#line 90 "calc-sintaxis.y"
+#line 96 "calc-sintaxis.y"
            { (yyval.valuetype) = BOOLVALUE; }
-#line 1227 "calc-sintaxis.tab.c"
+#line 1232 "calc-sintaxis.tab.c"
     break;
 
   case 14: /* expr: VALOR  */
-#line 93 "calc-sintaxis.y"
+#line 99 "calc-sintaxis.y"
             { 
            ASTNode* literal = createNode(NODE_LITERAL); 
-           literal -> data.literal.value = (yyvsp[0].valuetype); 
+           literal -> data.literal.value = (yyvsp[0].Node) -> data.literal.value; 
            (yyval.Node) = literal;
       }
-#line 1237 "calc-sintaxis.tab.c"
+#line 1242 "calc-sintaxis.tab.c"
     break;
 
   case 15: /* expr: expr '+' expr  */
-#line 98 "calc-sintaxis.y"
+#line 104 "calc-sintaxis.y"
                     { 
           ASTNode* addition  = createNode(NODE_BINARY_OPERATION); 
           addition -> data.binaryOperation.left = (yyvsp[-2].Node);
@@ -1245,11 +1250,11 @@ yyreduce:
           addition -> data.binaryOperation.operator = '+'; 
           (yyval.Node) = addition;
       }
-#line 1249 "calc-sintaxis.tab.c"
+#line 1254 "calc-sintaxis.tab.c"
     break;
 
   case 16: /* expr: expr '*' expr  */
-#line 105 "calc-sintaxis.y"
+#line 111 "calc-sintaxis.y"
                     { 
           ASTNode* multiplication = createNode(NODE_BINARY_OPERATION); 
           multiplication -> data.binaryOperation.left = (yyvsp[-2].Node) ;
@@ -1257,101 +1262,101 @@ yyreduce:
           multiplication -> data.binaryOperation.operator = '*'; 
           (yyval.Node) = multiplication;
       }
-#line 1261 "calc-sintaxis.tab.c"
+#line 1266 "calc-sintaxis.tab.c"
     break;
 
   case 17: /* expr: expr '-' expr  */
-#line 112 "calc-sintaxis.y"
+#line 118 "calc-sintaxis.y"
                     { 
           (yyval.Node) = createNode(NODE_BINARY_OPERATION); 
           (yyval.Node)->data.binaryOperation.left = (yyvsp[-2].Node);
           (yyval.Node)->data.binaryOperation.right = (yyvsp[0].Node);
           (yyval.Node)->data.binaryOperation.operator = '-'; 
       }
-#line 1272 "calc-sintaxis.tab.c"
+#line 1277 "calc-sintaxis.tab.c"
     break;
 
   case 18: /* expr: '(' expr ')'  */
-#line 118 "calc-sintaxis.y"
+#line 124 "calc-sintaxis.y"
                    { 
           (yyval.Node) = (yyvsp[-1].Node); 
       }
-#line 1280 "calc-sintaxis.tab.c"
+#line 1285 "calc-sintaxis.tab.c"
     break;
 
   case 19: /* expr: expr AND expr  */
-#line 121 "calc-sintaxis.y"
+#line 127 "calc-sintaxis.y"
                     { 
           (yyval.Node) = createNode(NODE_BINARY_OPERATION); 
           (yyval.Node)->data.binaryOperation.left = (yyvsp[-2].Node);
           (yyval.Node)->data.binaryOperation.right = (yyvsp[0].Node);
           (yyval.Node)->data.binaryOperation.operator = 'Y'; 
       }
-#line 1291 "calc-sintaxis.tab.c"
+#line 1296 "calc-sintaxis.tab.c"
     break;
 
   case 20: /* expr: expr OR expr  */
-#line 127 "calc-sintaxis.y"
+#line 133 "calc-sintaxis.y"
                    { 
           (yyval.Node) = createNode(NODE_BINARY_OPERATION); 
           (yyval.Node)->data.binaryOperation.left = (yyvsp[-2].Node);
           (yyval.Node)->data.binaryOperation.right = (yyvsp[0].Node);
           (yyval.Node)->data.binaryOperation.operator = 'O'; 
       }
-#line 1302 "calc-sintaxis.tab.c"
+#line 1307 "calc-sintaxis.tab.c"
     break;
 
   case 21: /* expr: ID  */
-#line 133 "calc-sintaxis.y"
+#line 139 "calc-sintaxis.y"
          { 
           ASTNode*  declaration = createNode(NODE_DECLARATION); 
           declaration ->data.declaration.identifier = (yyvsp[0].id); 
           (yyval.Node) = declaration;
       }
-#line 1312 "calc-sintaxis.tab.c"
+#line 1317 "calc-sintaxis.tab.c"
     break;
 
   case 22: /* expr: boolean  */
-#line 138 "calc-sintaxis.y"
+#line 144 "calc-sintaxis.y"
               { 
           ASTNode* literal = createNode(NODE_LITERAL); 
-          literal -> data.literal.value = (yyvsp[0].valuetype); 
+          literal -> data.literal.value = (yyvsp[0].Node) -> data.literal.value; 
           (yyval.Node) = literal; 
       }
-#line 1322 "calc-sintaxis.tab.c"
+#line 1327 "calc-sintaxis.tab.c"
     break;
 
   case 23: /* VALOR: INT  */
-#line 145 "calc-sintaxis.y"
+#line 151 "calc-sintaxis.y"
            { 
     ASTNode*  literal = createNode(NODE_LITERAL);
     literal->data.literal.value = (yyvsp[0].value);
     literal->data.literal.valuetype = INTVALUE; 
-    (yyval.valuetype) = literal;
+    (yyval.Node) = literal;
 }
-#line 1333 "calc-sintaxis.tab.c"
+#line 1338 "calc-sintaxis.tab.c"
     break;
 
   case 24: /* boolean: TRUE  */
-#line 151 "calc-sintaxis.y"
+#line 157 "calc-sintaxis.y"
               { ASTNode* literal =createNode(NODE_LITERAL);
                 literal ->data.literal.value = 1;
                 literal ->data.literal.valuetype = BOOLVALUE;
-                (yyval.valuetype) = literal; }
-#line 1342 "calc-sintaxis.tab.c"
+                (yyval.Node) = literal; }
+#line 1347 "calc-sintaxis.tab.c"
     break;
 
   case 25: /* boolean: FALSE  */
-#line 155 "calc-sintaxis.y"
+#line 161 "calc-sintaxis.y"
                { ASTNode* literal =createNode(NODE_LITERAL);
                  literal ->data.literal.value = 0;
                  literal ->data.literal.valuetype = BOOLVALUE;
-                 (yyval.valuetype) = literal; }
-#line 1351 "calc-sintaxis.tab.c"
+                 (yyval.Node) = literal; }
+#line 1356 "calc-sintaxis.tab.c"
     break;
 
 
-#line 1355 "calc-sintaxis.tab.c"
+#line 1360 "calc-sintaxis.tab.c"
 
       default: break;
     }
@@ -1544,4 +1549,4 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 160 "calc-sintaxis.y"
+#line 166 "calc-sintaxis.y"

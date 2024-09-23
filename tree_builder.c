@@ -17,7 +17,7 @@ ASTNode* createNode( NodeType type){
             node->data.declaration.value= 0;
             break;
         case NODE_ASSIGNMENT:
-            node->data.assignment.identifier= NULL;
+            node->data.assignment.receiver= NULL;
             node->data.assignment.value= 0;
             break;       
         case NODE_BINARY_OPERATION:
@@ -53,8 +53,8 @@ void printAST(ASTNode* node) {
             printf("Declaration: %s\n", node->data.declaration.identifier);  // Print identifier
             break;
 
-        case NODE_ASSIGNMENT:
-            printf("Assignment: %s = \n", node->data.assignment.identifier);  // Print variable being assigned
+         case NODE_ASSIGNMENT:
+            printf("Assignment: %s = \n", node->data.assignment.receiver);  // Print variable being assigned
             printAST(node->data.assignment.value);
             //printf("ValueType: %d\n", node->data.assignment.valuetype);  // Print the value type (not an AST node)
             break;

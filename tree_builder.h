@@ -1,6 +1,6 @@
 #ifndef TREE_BUILDER_H
 #define TREE_BUILDER_H
-#include "value_table.c"
+#include "value_table.h"
 
 //#pragma message("tree_builder.h included")
 typedef enum {
@@ -37,9 +37,11 @@ typedef struct ASTNode {
             char* identifier; 
             int value;
             ValueType valuetype;
+            Tuple* tableposition;
         } declaration;
         struct{
-            char* identifier; 
+            char* receiver; 
+            Tuple* tableposition;
             struct ASTNode* value;
         } assignment;
          struct{

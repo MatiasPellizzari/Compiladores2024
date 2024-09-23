@@ -7,9 +7,9 @@
 #define VOIDTYPE JUSTVOID 
 int yylex();
 void yyerror(const char *s);
-struct Tuple* head;
+struct Node* head;
 void initializehead() {
-    head = (struct Tuple*)malloc(sizeof(struct Tuple));
+    head = (struct Node*)malloc(sizeof(struct Node));
 }
 %}
 
@@ -29,18 +29,22 @@ void initializehead() {
 %token MAIN RET
 
 %type <Node> prog main_func decl decls sent sents  expr
-%type <valuetype> type VALOR boolean
+%type <Node>  VALOR boolean
+%type <valuetype> type
 
 %left '+' '-'
 %left '*'
 %left AND OR
 %%
  
-prog: main_func { ASTNode* program = createNode(NODE_PROGRAM);
+prog: main_func { freeList(head);
+                  initializehead();
+                  ASTNode* program = createNode(NODE_PROGRAM);
                   program->data.function.returnType = $1->data.function.returnType;
                   program->data.function.decls = $1->data.function.decls;
                   program->data.function.sents = $1->data.function.sents;
-                  printAST(program);}
+                  printAST(program);
+                  printList(head);}
       ; 
 
 main_func: type MAIN '(' ')' '{' decls sents '}' { ASTNode* function = createNode(NODE_PROGRAM);
@@ -60,6 +64,7 @@ decl: type ID ';' { //printf("Declaración de variable \n");
                     declaration->data.declaration.valuetype = $1;
                     declaration->data.declaration.identifier = $2;
                     insertToTable(declaration->data.declaration.identifier,declaration->data.declaration.valuetype,0,head);
+                    declaration->data.declaration.tableposition = searchId(declaration->data.declaration.identifier,head);
                     $$=declaration;
                     }
     ;
@@ -71,7 +76,8 @@ decls: decl { $$ = $1; }
 
 sent: ID '=' expr ';'  { //printf("Asignación \n");
                          ASTNode* assignment = createNode(NODE_ASSIGNMENT);
-                         assignment -> data.assignment.identifier= $1;
+                         assignment -> data.assignment.receiver= $1 ;
+                         assignment -> data.assignment.tableposition= searchId(assignment -> data.assignment.receiver,head);
                          assignment -> data.assignment.value = $3;
                          $$= assignment; } 
     | RET expr ';'     { //printf("Return: %d\n", $2); 
@@ -92,7 +98,7 @@ type: INT  { $$ = INTVALUE; }
 
 expr: VALOR { 
            ASTNode* literal = createNode(NODE_LITERAL); 
-           literal -> data.literal.value = $1; 
+           literal -> data.literal.value = $1 -> data.literal.value; 
            $$ = literal;
       }
     | expr '+' expr { 
@@ -137,7 +143,7 @@ expr: VALOR {
       }
     | boolean { 
           ASTNode* literal = createNode(NODE_LITERAL); 
-          literal -> data.literal.value = $1; 
+          literal -> data.literal.value = $1 -> data.literal.value; 
           $$ = literal; 
       }
     ;
